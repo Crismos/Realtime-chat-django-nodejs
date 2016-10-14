@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div id="chat">
+
+	<div id="users">
+
+	</div>
+
+	<div id="messages">
+		
+	</div>
+
+	<div id="send">
+
+		<textarea id="text" name="text" placeholder="Type your message"></textarea>
+		<a href="/logout"><button class="red">LOGOUT</button></a>
+		<input type="submit" value="SEND" id="submit"/>
+	</div>
+</div>
+<script>
+	const pseudo = '{{ pseudo }}';
+</script>
+<script src="/media/script/textarea.js"></script>
+<script src="/media/script/socket.js"></script>
+
+{% endblock %}

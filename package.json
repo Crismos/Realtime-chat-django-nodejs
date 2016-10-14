@@ -1,0 +1,23 @@
+{
+  "name": "realtime-chat-django-nodejs",
+  "version": "0.1.0",
+  "description": "Realtime chat using Django and Nodejs",
+  "main": "index.js",
+  "directories": {
+    "example": "example"
+  },
+  "scripts": {
+    "node": "node nodejs/server.js",
+    "django": "manage.py runserver",
+    "migrations": "manage.py makemigrations",
+    "migrate": "manage.py migrate"
+  },
+  "author": "romain879@gmail.com",
+  "license": "ISC",
+  "dependencies": {
+    "dateformat": "*",
+    "express": "*",
+    "request": "*",
+    "socket.io": "*"
+  }
+}
