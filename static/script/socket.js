@@ -87,15 +87,6 @@ $(document).ready(function() {
 	// connecting to socket.io 
 	var socket = io("ws://localhost:3000");
 
-	// when nodejs send your socket id
-	socket.on("USERID", function(data) {
-		// post it with AJAX to update server database
-		$.post("node_api/post/", {id: data.id}).done(function(data) {
-			// when it's done say it to nodejs
-			socket.emit("API UPDATE: new user", data);
-		});
-	});
-
 	// get the user list from nodejs 
 	socket.on("SET USER LIST", function(data) {
 		users.users = data;

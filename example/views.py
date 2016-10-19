@@ -20,6 +20,12 @@ class LoginView(TemplateView):
 		password = request.POST.get('password', False)
 		user = authenticate(username=username, password=password)
 		if user is not None and user.is_active:
+			# disconnect all session for this user
+			mUser = User.objects.get(username=username)
+			for s in Session.objects.all():
+				if s.get_decoded().get('_auth_user_id') == str(mUser.id):
+					s.delete()
+			#log the user
 			auth_login(request, user)
 			return HttpResponseRedirect('/')
 			

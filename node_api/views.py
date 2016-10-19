@@ -6,27 +6,32 @@ from example.models import Chater, Messages
 from django.http import HttpResponse, JsonResponse
 import json
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_exempt
 
-APIKEY = "a"
+debug = True
 # home view redirect
 def home(request):
 	return redirect('/')
 
 #user post his socket id
 @login_required(login_url='../login/')
+@csrf_exempt
 def post(request):
 	# if method = post
-	if request.method == 'POST':
-		# get socket id
-		socket_id = request.POST.get('id')
-		# get Chater object
-		query = Chater.objects.filter(user_id=request.user.id)
+	if request.method == 'POST' and (debug == True or request.user.username == 'NodeJS'):
+		session_id = request.POST.get('session')
+		socket_id = request.POST.get('socket')
+		# get user_id from Session
+		user_id = Session.objects.filter(session_key=session_id)[0].get_decoded().get('_auth_user_id')
+		query = Chater.objects.filter(user_id=user_id)
 		if query == []:
 			query = Chater(user_id=request.user.id)
-		# set the socket and save
+		# update API
 		query[0].setSocket(socket_id)
 		return json_response({})
+
 	else :
+		print('Someone try to post')
 		return redirect('/')
 
 # node get users
@@ -34,9 +39,7 @@ def post(request):
 def getUsers(request):
 
 	# Only Node can access
-	print(request.user.username)
-
-	if request.user.username == 'NodeJS':
+	if request.user.username == 'NodeJS' or debug == True:
 
 		# get session
 		sessions = Session.objects.filter(expire_date__gte=timezone.now())
@@ -53,9 +56,14 @@ def getUsers(request):
 
 	    # parse data for API
 		for d in data:
-			jsonresult[d.id] = {}
-			jsonresult[d.id]["username"] = d.username
-			jsonresult[d.id]["socket"] = Chater.objects.filter(user_id=d.id)[0].socket_io
+			if(Chater.objects.filter(user_id=d.id)[0].socket_io != '-1'):
+				jsonresult[d.id] = {}
+				jsonresult[d.id]["sessions"] = []
+				for s in Session.objects.all():
+					if s.get_decoded().get('_auth_user_id') == str(d.id):
+						jsonresult[d.id]["sessions"].append(s.session_key)
+				jsonresult[d.id]["username"] = d.username
+				jsonresult[d.id]["socket"] = Chater.objects.filter(user_id=d.id)[0].socket_io
 
 		return json_response(jsonresult)
 	else:
