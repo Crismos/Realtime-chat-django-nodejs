@@ -45,3 +45,8 @@ nodejs/node_modules/
 ###################
 
 *.bat
+
+# Password file #
+#################
+
+nodejs/api_key.json

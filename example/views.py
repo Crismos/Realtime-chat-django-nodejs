@@ -12,18 +12,18 @@ import json
 
 class LoginView(TemplateView):
 
-  template_name = 'example/login.html'
+	template_name = 'example/login.html'
 
-  def post(self, request, **kwargs):
+	def post(self, request, **kwargs):
 
-    username = request.POST.get('username', False)
-    password = request.POST.get('password', False)
-    user = authenticate(username=username, password=password)
-    if user is not None and user.is_active:
-        auth_login(request, user)
-        return HttpResponseRedirect('/')
-
-    return render(request, self.template_name)
+		username = request.POST.get('username', False)
+		password = request.POST.get('password', False)
+		user = authenticate(username=username, password=password)
+		if user is not None and user.is_active:
+			auth_login(request, user)
+			return HttpResponseRedirect('/')
+			
+		return render(request, self.template_name)
 
 @login_required(login_url='login/')
 def home(request):

@@ -30,28 +30,36 @@ def post(request):
 		return redirect('/')
 
 # node get users
+@login_required(login_url='../login/')
 def getUsers(request):
 
-	# get session
-    sessions = Session.objects.filter(expire_date__gte=timezone.now())
-    uid_list = []
+	# Only Node can access
+	print(request.user.username)
 
-    # Build a list of user ids from that query
-    for session in sessions:
-        data = session.get_decoded()
-        uid_list.append(data.get('_auth_user_id', None))
+	if request.user.username == 'NodeJS':
 
-    # Query all logged in users based on id list
-    data = User.objects.filter(id__in=uid_list)
-    jsonresult = {}
+		# get session
+		sessions = Session.objects.filter(expire_date__gte=timezone.now())
+		uid_list = []
 
-    # parse data for API
-    for d in data:
-    	jsonresult[d.id] = {}
-    	jsonresult[d.id]["username"] = d.username
-    	jsonresult[d.id]["socket"] = Chater.objects.filter(user_id=d.id)[0].socket_io
+	    # Build a list of user ids from that query
+		for session in sessions:
+			data = session.get_decoded()
+			uid_list.append(data.get('_auth_user_id', None))
 
-    return json_response(jsonresult)
+		# Query all logged in users based on id list
+		data = User.objects.filter(id__in=uid_list)
+		jsonresult = {}
+
+	    # parse data for API
+		for d in data:
+			jsonresult[d.id] = {}
+			jsonresult[d.id]["username"] = d.username
+			jsonresult[d.id]["socket"] = Chater.objects.filter(user_id=d.id)[0].socket_io
+
+		return json_response(jsonresult)
+	else:
+		return redirect('/')
 
 
 #date handler
@@ -63,6 +71,7 @@ def date_handler(obj):
 
 
 #node get messages
+@login_required(login_url='../login/')
 def getMessages(request):
 	# get messages ordered by date limit 20
     messages = Messages.objects.all().order_by('-date')[:20]
