@@ -35,6 +35,7 @@ class LoginView(TemplateView):
 def home(request):
 	pseudo = request.user.username
 	users = get_all_logged_in_users()
+	messages = Messages.objects.all().order_by('-date')[:20]
 	return render(request, 'example/home.html', locals())
 
 @login_required(login_url='login/')

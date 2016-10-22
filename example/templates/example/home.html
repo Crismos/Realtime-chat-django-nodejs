@@ -8,7 +8,24 @@
 	</div>
 
 	<div id="messages">
-		
+		{% for message in messages reversed %}
+		{% if message.user.username == pseudo %}
+		<div class="message">
+		{% else %}
+		<div class="message other">
+		{% endif %}
+			<div class="header">
+				<span>
+					<small>
+						{{ message.user.username }}
+					</small>
+				</span>
+			</div>
+			<div class="content">
+				<p>{{ message.message }}</p>
+			</div>
+		</div>
+		{% endfor %}
 	</div>
 
 	<div id="send">

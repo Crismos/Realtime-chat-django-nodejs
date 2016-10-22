@@ -40,6 +40,7 @@ Thumbs.db
 ################
 
 nodejs/node_modules/
+node_modules/
 
 # Personnal batch #
 ###################

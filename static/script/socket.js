@@ -63,6 +63,20 @@ function Users() {
 		updateView();
 	} 
 
+	this.remove = function(user) {
+		var index = 0;
+		for(var key in users) {
+			if(users[key].username === user.username) {
+				break;
+			}
+			index++;
+		}
+		if(index < users.length) {
+			users.splice(index, 1);
+		}
+		updateView();
+	}
+
 	function updateView() {
 		// sort user array order by name
 		var u = users.sort(function(a,b) {
@@ -97,19 +111,28 @@ $(document).ready(function() {
 		users.addUser(data);
 	});
 
+	socket.on('User leave', function(data) {
+		users.remove(data);
+	});
+
+	const message = '<div class="message{=other=}"><div class="header"><span><small>{=pseudo=}</small></span></div><div class="content"><p>{=content=}</p></div></div>';
+
+	socket.on('message', function(data) {
+		$("#messages").append(message.replace('{=other=}',' other').replace('{=pseudo=}', data.user.username).replace('{=content=}', data.content));
+		scroll();
+	});
+
 
 	// add message to the list
-	const message = '<div class="message waiting"><div class="header"><span><small>{=pseudo=}</small></span></div><div class="content"><p>{=content=}</p></div></div>';
 
 	$("#submit").click(function() {
-		$("#messages").append(message.replace('{=pseudo=}', pseudo).replace('{=content=}', $("#text").val().replace(/\n/g,"<br>")));
+		$("#messages").append(message.replace('{=other=}','').replace('{=pseudo=}', pseudo).replace('{=content=}', $("#text").val().replace(/\n/g,"<br>")));
 		scroll();
 		var d = {message: $("#text").val()};
 		$.post("post_message/",	d).done(function(data) {
 			socket.emit("NEW MESSAGE", d);
-			$(".message").removeClass("waiting");
 			$("#text").val("");
 		});
-
 	});
+	scroll();
 });

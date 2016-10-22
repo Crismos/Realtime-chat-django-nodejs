@@ -15,9 +15,9 @@
   "author": "romain879@gmail.com",
   "license": "ISC",
   "dependencies": {
-    "dateformat": "*",
-    "express": "*",
-    "request": "*",
-    "socket.io": "*"
+    "dateformat": "~1.0.12",
+    "express": "~4.14.0",
+    "request": "~2.75.0",
+    "socket.io": "~1.5.0"
   }
 }
