@@ -1,0 +1,10 @@
+asgi-redis==0.10.0
+asgiref==0.14.0
+autobahn==0.16.0
+Django==1.9.5
+msgpack-python==0.4.8
+pytz==2016.6.1
+redis==2.10.5
+six==1.10.0
+txaio==2.5.1
+zope.interface==4.3.2
